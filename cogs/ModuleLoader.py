@@ -6,9 +6,9 @@ from assets.tools.USER_CHECKERS import is_owner
 from assets.constants.COLORS import *
 
 extensions_list = []
-for extension in os.listdir("./cogs"):
-    if extension.endswith(".py"):
-        extensions_list.append(extension[:-3])
+for file in os.listdir("./cogs"):
+    if file.endswith(".py"):
+        extensions_list.append(file[:-3])
 
 
 class ModuleLoader(commands.Cog):
@@ -73,15 +73,15 @@ class ModuleLoader(commands.Cog):
     async def _module_restart(self, inter: disnake.GuildCommandInteraction):
         """reloads every loaded and loads unloaded modules."""
         await inter.response.send_message("Reloading all modules...")
-        for module in os.listdir("./cogs"):
-            if module.endswith(".py"):
+        for file in os.listdir("./cogs"):
+            if file.endswith(".py"):
                 try:
-                    self.bot.unload_extension(f"cogs.{module[:-3]}")
-                    self.bot.load_extension(f"cogs.{module[:-3]}")
-                    print(f"[INFO] Reloaded {module[:-3]}.")
+                    self.bot.unload_extension(f"cogs.{file[:-3]}")
+                    self.bot.load_extension(f"cogs.{file[:-3]}")
+                    print(f"[INFO] Reloaded {file[:-3]}.")
                 except disnake.ext.commands.errors.ExtensionNotLoaded:
-                    self.bot.load_extension(f"cogs.{module[:-3]}")
-                    print(f"[INFO] Loaded {module[:-3]}.")
+                    self.bot.load_extension(f"cogs.{file[:-3]}")
+                    print(f"[INFO] Loaded {file[:-3]}.")
         await inter.edit_original_message("All modules have been reloaded.")
         print("I have reloaded all extensions.")
 
