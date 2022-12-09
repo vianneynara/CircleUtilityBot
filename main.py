@@ -7,9 +7,9 @@ import disnake
 from disnake.ext import commands
 from disnake.ext.commands import Bot
 
-from assets.constants.INTENTS import INTENTS
-from assets.constants.IGNORED_MODULES import IGNORED_MODULES
-from assets.tools.USER_CHECKERS import is_owner
+from assets.constants.Intents import INTENTS
+from assets.constants.IgnoredModules import IGNORED_MODULES
+from assets.tools.UserCheckers import is_owner
 
 
 def start_bot(token: str):

@@ -1,5 +1,5 @@
 import disnake
-from assets.CONFIG_CONSTANTS import OWNER_ID
+from assets.OwnerDiscordID import OWNER_ID
 from typing import Any
 
 
