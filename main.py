@@ -5,7 +5,7 @@ import disnake
 from disnake.ext import commands
 from assets.tools.usercheckers import is_owner
 
-from circleutils import CircleUtils
+from circleutilitybot import CircleUtils
 
 dotenv.load_dotenv()
 print("Fetching bot token...")

@@ -1,4 +1,4 @@
-# Circle Util's Bot
+# Circle Utility Bot
 
 ### What is this bot about?
 This bot is a **personal** discord bot built using python. Its aim is to provide Circle (the owner of the bot) utilize various discord features. This will be used to do certain things. See features.
