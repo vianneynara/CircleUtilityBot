@@ -2,8 +2,8 @@ import os
 import disnake
 from disnake.ext import commands
 
-from assets.tools.UserCheckers import is_owner
-from assets.constants.Colors import *
+from assets.tools.usercheckers import is_owner
+from assets.constants.colors import *
 
 extensions_list = []
 for file in os.listdir("./cogs"):
