@@ -45,12 +45,13 @@ def start_bot(token: str):
     @bot.slash_command(name="tools_reload")
     @commands.check(is_owner)
     async def _tools_reload(inter: disnake.GuildCommandInteraction):
+        """reloads module loaders (load, unload, reload, restart)"""
         try:
-            bot.unload_extension("cogs.module_loaders")
-            bot.load_extension("cogs.module_loaders")
+            bot.unload_extension("cogs.ModuleLoader")
+            bot.load_extension("cogs.ModuleLoader")
             await inter.response.send_message("Success reloading **module loaders**.")
         except:
-            bot.load_extension("cogs.devtools")
+            bot.load_extension("cogs.ModuleLoader")
             await inter.response.send_message("Success reloading **module loaders**.")
 
     bot.run(token)
