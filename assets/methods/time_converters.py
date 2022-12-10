@@ -9,8 +9,11 @@ time_utcnow = disnake.utils.utcnow()
 
 
 async def get_timedelta_epoch(inter: Any, duration: str, restrict=True):
-    try: await check_duration(inter, duration)
-    except InvalidDurationException: return
+    if duration[0].isalpha() or duration[-1:].isdigit():
+        try:
+            raise InvalidDurationException("Duration invalid!")
+        except disnake.errors.InteractionResponded:
+            raise InvalidDurationException("Duration invalid!")
 
     timedelta = get_timedelta(duration)
     if restrict:
@@ -21,17 +24,6 @@ async def get_timedelta_epoch(inter: Any, duration: str, restrict=True):
             )
     epoch = (time_utcnow + timedelta).timestamp()
     return timedelta, epoch
-
-
-async def check_duration(inter: Any, duration: str):
-    if duration[0].isalpha() or duration[-1:].isdigit():
-        message = "Duration conversion failed! Please use the correct duration format! (e.g. 4h30m)"
-        try:
-            await inter.response.send_message(message)
-            raise InvalidDurationException("Duration invalid!")
-        except disnake.errors.InteractionResponded:
-            await inter.edit_original_message(message)
-            raise InvalidDurationException("Duration invalid!")
 
 
 def get_timedelta(duration: str):
