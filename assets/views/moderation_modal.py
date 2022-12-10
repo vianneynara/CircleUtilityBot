@@ -1,3 +1,5 @@
+from typing import Any
+
 import disnake
 from disnake import ui
 
@@ -5,11 +7,13 @@ from disnake import ui
 class ModerationModal(ui.Modal):
     def __init__(
             self,
+            custom_id: str,
             action: str,
             duration: bool = False
     ):
         super().__init__(
             title=action,
+            custom_id=custom_id,
             components=[
                 ui.TextInput(
                     label="Reason",
