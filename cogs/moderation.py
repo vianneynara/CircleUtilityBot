@@ -73,12 +73,14 @@ class Moderation(commands.Cog):
     ):
         try: await target_check(self.bot, inter, message.author)
         except InvalidTargetException: return
-        await inter.response.send_modal(modal=ModerationModal(action="Freezing", duration=True))
+
+        custom_id = f"moderation-modal-{inter.author.id}"
+        await inter.response.send_modal(modal=ModerationModal(custom_id=custom_id, action="Freezing", duration=True))
         try:
             modal = await self.bot.wait_for(
                 "modal_submit",
-                check=lambda inter: disnake.ModalInteraction.response.name,
-                timeout=300
+                check=lambda mod_inter: mod_inter.author.id == inter.author.id and mod_inter.custom_id == custom_id,
+                timeout=30
             )
         except asyncio.TimeoutError:
             return
