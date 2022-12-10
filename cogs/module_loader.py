@@ -109,10 +109,15 @@ class ModuleLoader(commands.Cog):
             title=f"List of available modules [`{len(modules)}`]",
             color=DISCORD_DARKGREY
         )
+        if len(enabled) > len(disabled):
+            for i in range(0, len(enabled) - len(disabled)): disabled.append(" ")
+        else:
+            for i in range(0, len(disabled) - len(enabled)): enabled.append(" ")
+
         if enabled: embed.add_field(name=f"[`🟩`] Enabled", value="```" + '\n'.join(enabled) + "```")
         if disabled:
-            # sep = ["|" for module in range(0, len(enabled) if len(enabled) > len(disabled) else len(disabled))]
-            # embed.add_field(name=f"|", value="\n".join(sep))
+            # seps = "\n".join([" " for module in range(0, len(enabled) if len(enabled) > len(disabled) else len(disabled))])
+            # embed.add_field(name=f"[`⬛`]", value=f'```{seps}```')
             embed.add_field(name=f"[`🟥`] Disabled", value="```" + '\n'.join(disabled) + "```")
         await inter.edit_original_message(embed=embed)
 
