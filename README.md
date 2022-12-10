@@ -5,6 +5,9 @@ This bot is a **personal** discord bot built using python. Its aim is to provide
 
 This bot is also used for my personal modules testing.
 
+### Disclaimer
+The bot is still in early development, there is also no schedule of changes since I work on this project solely for refining my previous discord bot projects.
+
 ### Features
 - [ ] Moderation
 - [ ] Embed builder
