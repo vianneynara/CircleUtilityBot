@@ -37,4 +37,7 @@ async def _tools_reload(inter: disnake.GuildCommandInteraction):
 
 
 if __name__ == "__main__":
-    circleutils.run(token)
+    try:
+        circleutils.run(token)
+    except disnake.errors.LoginFailure:
+        print("\nImproper/invalid token has been passed, please check your token in the environment file.\n")
