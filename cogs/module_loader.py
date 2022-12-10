@@ -107,14 +107,14 @@ class ModuleLoader(commands.Cog):
 
         embed = disnake.Embed(
             title=f"List of available modules [`{len(modules)}`]",
-            color=DISCORD_GREY
+            color=DISCORD_DARKGREY
         )
         if enabled: embed.add_field(name=f"[`🟩`] Enabled", value="```" + '\n'.join(enabled) + "```")
         if disabled:
             # sep = ["|" for module in range(0, len(enabled) if len(enabled) > len(disabled) else len(disabled))]
             # embed.add_field(name=f"|", value="\n".join(sep))
             embed.add_field(name=f"[`🟥`] Disabled", value="```" + '\n'.join(disabled) + "```")
-        await inter.edit_original_response(embed=embed)
+        await inter.edit_original_message(embed=embed)
 
 
 def setup(bot):
