@@ -1,2 +1,2 @@
 from .invalid_target import InvalidTargetException
-from .invalid_duration import InvalidDurationException
+from .invalid_duration import InvalidDurationException, DurationTooLongException

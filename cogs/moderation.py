@@ -7,7 +7,7 @@ from disnake.ext import commands
 
 from typing import Any
 from assets.methods.time_converters import get_timedelta_epoch
-from assets.exceptions import InvalidTargetException
+from assets.exceptions import InvalidTargetException, InvalidDurationException, DurationTooLongException
 from assets.views import ModerationModal
 
 
@@ -41,14 +41,14 @@ class Moderation(commands.Cog):
 
     @commands.slash_command(name="freeze")
     @commands.has_permissions(moderate_members=True)
-    async def _freeze(
+    async def s_freeze(
             self,
             inter: disnake.GuildCommandInteraction,
             target: disnake.Member,
             duration="3h",
             reason="Frozen for no reason."
     ):
-        """Freezes(timeouts) a specific member, preventing them from interacting in the server.
+        """Prevents a member from interacting in the server.
 
         Parameters
         ----------
@@ -60,13 +60,22 @@ class Moderation(commands.Cog):
         except InvalidTargetException: return
         await inter.response.defer()
 
-        timedelta, epoch = await get_timedelta_epoch(inter, duration)
+        try:
+            timedelta, epoch = get_timedelta_epoch(duration)
+        except InvalidDurationException:
+            return await inter.edit_original_message(f"Invalid duration format inserted!")
+        except DurationTooLongException:
+            return await inter.edit_original_message(f"Duration is too long! Maximum value should be `28` days.")
+
         await target.timeout(duration=timedelta, reason=reason)
-        await inter.edit_original_message(f"<@!{target.id}> **has been frozen until** <t:{int(epoch)}:F>.")
+        await inter.edit_original_message(
+            f"<@!{target.id}> **has been frozen until** <t:{int(epoch)}:F>."
+            f"\n`for:` {reason}"
+        )
 
     @commands.message_command(name="quick freeze")
     @commands.has_permissions(moderate_members=True)
-    async def _freeze(
+    async def m_freeze(
             self,
             inter: disnake.GuildCommandInteraction,
             message: disnake.Message,
@@ -85,11 +94,18 @@ class Moderation(commands.Cog):
         except asyncio.TimeoutError:
             return
         duration, reason = modal.text_values["duration"], modal.text_values["reason"]
-        timedelta, epoch = await get_timedelta_epoch(inter, duration)
+
+        try:
+            timedelta, epoch = get_timedelta_epoch(duration)
+        except InvalidDurationException:
+            return await modal.edit_original_message(f"Invalid duration format inserted!")
+        except DurationTooLongException:
+            return await modal.edit_original_message(f"Duration is too long! Maximum value should be `28` days.")
+        
         await message.author.timeout(duration=timedelta, reason=reason)
         await modal.edit_original_message(
             f"<@!{message.author.id}> **has been frozen until** <t:{int(epoch)}:F>."
-            f"\nFor: `{reason}`"
+            f"\n`for:` {reason}"
         )
 
 

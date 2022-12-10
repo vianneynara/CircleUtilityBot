@@ -2,13 +2,13 @@ import datetime
 import re
 import disnake
 
-from assets.exceptions import InvalidDurationException
+from assets.exceptions import InvalidDurationException, DurationTooLongException
 from typing import Any
 
 time_utcnow = disnake.utils.utcnow()
 
 
-async def get_timedelta_epoch(inter: Any, duration: str, restrict=True):
+def get_timedelta_epoch(duration: str, restrict=True):
     if duration[0].isalpha() or duration[-1:].isdigit():
         try:
             raise InvalidDurationException("Duration invalid!")
@@ -18,10 +18,7 @@ async def get_timedelta_epoch(inter: Any, duration: str, restrict=True):
     timedelta = get_timedelta(duration)
     if restrict:
         if timedelta > datetime.timedelta(days=28):
-            return await inter.response.send_message(
-                "Duration is too long, longest freeze time is `28` days.",
-                ephemeral=True,
-            )
+            raise DurationTooLongException
     epoch = (time_utcnow + timedelta).timestamp()
     return timedelta, epoch
 
