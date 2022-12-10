@@ -7,7 +7,7 @@ import disnake
 from disnake.ext import commands
 
 from assets.constants.intents import INTENTS
-from assets.constants.ignoredmodules import IGNORED_MODULES
+from assets.constants.ignored_modules import IGNORED_MODULES
 
 dotenv.load_dotenv()
 
