@@ -1,1 +1,1 @@
-from .bot import CircleUtils
+from .bot import CircleUtility

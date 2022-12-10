@@ -12,7 +12,7 @@ from assets.constants.ignored_modules import IGNORED_MODULES
 dotenv.load_dotenv()
 
 
-class CircleUtils(commands.Bot):
+class CircleUtility(commands.Bot):
     def __init__(self):
         super().__init__(
             command_prefix=(["c!", "C!"]),
