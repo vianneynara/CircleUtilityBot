@@ -10,6 +10,10 @@ The bot is still in early development, there is also no schedule of changes sinc
 
 ### Features
 - [ ] Moderation
+  - [ ] Timeout, untimeout
+  - [ ] Kick, ban, unban
+  - [ ] Warn message
+  - [ ] Clean and purge message
 - [ ] Embed builder
 - [ ] Webhook builder
 - [ ] User information
