@@ -3,7 +3,6 @@ import re
 import disnake
 
 from assets.exceptions import InvalidDurationException, DurationTooLongException
-from typing import Any
 
 time_utcnow = disnake.utils.utcnow()
 
@@ -11,9 +10,9 @@ time_utcnow = disnake.utils.utcnow()
 def get_timedelta_epoch(duration: str, restrict=True):
     if duration[0].isalpha() or duration[-1:].isdigit():
         try:
-            raise InvalidDurationException("Duration invalid!")
+            raise InvalidDurationException
         except disnake.errors.InteractionResponded:
-            raise InvalidDurationException("Duration invalid!")
+            raise InvalidDurationException
 
     timedelta = get_timedelta(duration)
     if restrict:
@@ -24,13 +23,13 @@ def get_timedelta_epoch(duration: str, restrict=True):
 
 
 def get_timedelta(duration: str):
-    duration = duration.lower().replace(" ", "")  # lower the string and remove spaces
+    duration = duration.lower().replace(" ", "") # remove space and lower string
     values = {"days": 0, "hours": 0, "minutes": 0, "seconds": 0}
     for k in values.copy():
         try:
-            value = re.search("\d+" + k[0], duration).group()  # search for a number that stands next to a certain letter
-            values[k] = int(value.replace(k[0], ""))  # extract the number
+            value = re.search("\d+" + k[0], duration).group()  # search for number next to a letter
+            values[k] = int(value.replace(k[0], ""))  # replacing the number
         except:
-            pass  # if the number wasn't found, just leave it with the default value - 0
+            pass
 
     return datetime.timedelta(**values)
