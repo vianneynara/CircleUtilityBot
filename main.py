@@ -14,30 +14,30 @@ if token == "":
     print("Please insert a valid discord bot token in the environment file.")
     exit(0)
 
-circleutils = CircleUtility()
+cu = CircleUtility()
 
 
-@circleutils.command()
+@cu.command()
 @commands.cooldown(1, 5, commands.BucketType.user)
 async def ping(ctx):
-    await ctx.reply(f"🏓 **Pong!** `{round(circleutils.latency * 1000)} ms`", mention_author=False)
+    await ctx.reply(f"🏓 **Pong!** `{round(cu.latency * 1000)} ms`", mention_author=False)
 
 
-@circleutils.slash_command(name="tools_reload")
+@cu.slash_command(name="tools_reload")
 @commands.check(is_owner)
 async def _tools_reload(inter: disnake.GuildCommandInteraction):
     """reloads module loaders (load, unload, reload, restart)"""
     try:
-        circleutils.unload_extension("cogs.ModuleLoader")
-        circleutils.load_extension("cogs.ModuleLoader")
+        cu.unload_extension("cogs.ModuleLoader")
+        cu.load_extension("cogs.ModuleLoader")
         await inter.response.send_message("Success reloading **module loaders**.")
     except disnake.ext.commands.ExtensionNotLoaded:
-        circleutils.load_extension("cogs.ModuleLoader")
+        cu.load_extension("cogs.ModuleLoader")
         await inter.response.send_message("Success reloading **module loaders**.")
 
 
 if __name__ == "__main__":
     try:
-        circleutils.run(token)
+        cu.run(token)
     except disnake.errors.LoginFailure:
         print("\nImproper/invalid token has been passed, please check your token in the environment file.\n")
