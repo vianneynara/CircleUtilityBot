@@ -52,6 +52,7 @@ class Moderation(commands.Cog):
 
         Parameters
         ----------
+        inter: Interaction.
         target: The member to be frozen.
         duration: The duration of this freeze. (e.g. 1d3h -> 1 day 3 hours, max is 28 days.) Default is 3 hours.
         reason: Action reason.

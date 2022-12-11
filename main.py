@@ -5,7 +5,7 @@ import disnake
 from disnake.ext import commands
 from assets.tools.usercheckers import is_owner
 
-from circleutilitybot import CircleUtils
+from circleutilitybot import CircleUtility
 
 dotenv.load_dotenv()
 print("Fetching bot token...")
@@ -14,7 +14,7 @@ if token == "":
     print("Please insert a valid discord bot token in the environment file.")
     exit(0)
 
-circleutils = CircleUtils()
+circleutils = CircleUtility()
 
 
 @circleutils.command()
