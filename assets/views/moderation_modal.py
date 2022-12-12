@@ -40,12 +40,10 @@ class ModerationModal(ui.Modal):
 
     async def callback(self, modal: disnake.ModalInteraction, /):
         await modal.response.defer()
-        if self.has_duration:
-            if not modal.text_values["duration"]:
-                modal.text_values["duration"] = "3h"
 
-            if not modal.text_values["reason"]:
-                modal.text_values["reason"] = "Frozen for no reason."
-        else:
-            if not modal.text_values["reason"]:
-                modal.text_values["reason"] = "Frozen for no reason."
+        if modal.text_values["reason"] == '':
+            modal.text_values["reason"] = "Frozen for no reason."
+
+        if self.has_duration:
+            if modal.text_values["duration"] == '':
+                modal.text_values["duration"] = "3h"

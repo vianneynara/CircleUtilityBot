@@ -92,6 +92,8 @@ class Moderation(commands.Cog):
                 check=lambda mod_inter: mod_inter.author.id == inter.author.id and mod_inter.custom_id == custom_id,
                 timeout=30
             )
+            await modal.edit_original_message(f"Gathering timeout data...")
+            await asyncio.sleep(1)
         except asyncio.TimeoutError:
             return
         duration, reason = modal.text_values["duration"], modal.text_values["reason"]
@@ -102,7 +104,7 @@ class Moderation(commands.Cog):
             return await modal.edit_original_message(f"Invalid duration format inserted!")
         except DurationTooLongException:
             return await modal.edit_original_message(f"Duration is too long! Maximum value should be `28` days.")
-        
+
         await message.author.timeout(duration=timedelta, reason=reason)
         await modal.edit_original_message(
             f"<@!{message.author.id}> **has been frozen until** <t:{int(epoch)}:F>."
