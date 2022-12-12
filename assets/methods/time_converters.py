@@ -24,12 +24,12 @@ def get_timedelta_epoch(duration: str, restrict=True):
 
 def get_timedelta(duration: str):
     duration = duration.lower().replace(" ", "") # remove space and lower string
-    values = {"days": 0, "hours": 0, "minutes": 0, "seconds": 0}
-    for k in values.copy():
+    timedelta_values = {"days": 0, "hours": 0, "minutes": 0, "seconds": 0}
+    for k in timedelta_values.copy():
         try:
-            value = re.search("\d+" + k[0], duration).group()  # search for number next to a letter
-            values[k] = int(value.replace(k[0], ""))  # replacing the number
+            timeframe = re.search("\d+" + k[0], duration).group()  # search for number next to a letter
+            timedelta_values[k] = int(timeframe.replace(k[0], ""))  # replacing the number
         except:
             pass
 
-    return datetime.timedelta(**values)
+    return datetime.timedelta(**timedelta_values)
