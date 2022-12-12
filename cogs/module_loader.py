@@ -116,8 +116,6 @@ class ModuleLoader(commands.Cog):
 
         if enabled: embed.add_field(name=f"[`🟩`] Enabled", value="```" + '\n'.join(enabled) + "```")
         if disabled:
-            # seps = "\n".join([" " for module in range(0, len(enabled) if len(enabled) > len(disabled) else len(disabled))])
-            # embed.add_field(name=f"[`⬛`]", value=f'```{seps}```')
             embed.add_field(name=f"[`🟥`] Disabled", value="```" + '\n'.join(disabled) + "```")
         await inter.edit_original_message(embed=embed)
 
