@@ -1,6 +1,6 @@
 import disnake
 
-from assets.constants.ownerid import OWNER_ID
+from assets.constants.owner_id import OWNER_ID
 from typing import Any
 
 

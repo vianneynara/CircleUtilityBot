@@ -3,7 +3,7 @@ import dotenv
 import disnake
 
 from disnake.ext import commands
-from assets.tools.usercheckers import is_owner
+from assets.tools.user_checkers import is_owner
 
 from circleutilitybot import CircleUtility
 
