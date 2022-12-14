@@ -1,5 +1,3 @@
-import disnake
-
 from assets.constants.owner_id import OWNER_ID
 from typing import Any
 
