@@ -1,3 +1,3 @@
 IGNORED_MODULES = [
-    "preparations"
+    "Preparations"
 ]
