@@ -1,1 +1,1 @@
-from .moderation_modal import ModerationModal
+from .ModerationModal import ModerationModal
