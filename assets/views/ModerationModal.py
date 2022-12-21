@@ -3,6 +3,12 @@ from typing import Any
 import disnake
 from disnake import ui
 
+REASON: dict = {
+    "freeze": "Frozen",
+    "warn": "Warned",
+    "strike": "Striked"
+}
+
 
 class ModerationModal(ui.Modal):
     def __init__(
@@ -26,6 +32,7 @@ class ModerationModal(ui.Modal):
             ]
         )
         self.has_duration = duration
+        self.action = action
         if duration:
             self.append_component(
                 ui.TextInput(
@@ -38,11 +45,11 @@ class ModerationModal(ui.Modal):
                 )
             )
 
-    async def callback(self, modal: disnake.ModalInteraction, /):
+    async def callback(self, modal: disnake.ModalInteraction):
         await modal.response.defer()
 
         if modal.text_values["reason"] == '':
-            modal.text_values["reason"] = "Frozen for no reason."
+            modal.text_values["reason"] = "No reason provided."
 
         if self.has_duration:
             if modal.text_values["duration"] == '':
