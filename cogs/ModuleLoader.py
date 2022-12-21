@@ -33,7 +33,7 @@ class ModuleLoader(commands.Cog):
         module: module to be loaded
         """
         self.bot.load_extension(f"cogs.{module}")
-        print(f"[INFO] Loaded {module[:-3]}.")
+        print(f"[INFO] Loaded {module}.")
         await inter.response.send_message(f"**{module}** has been loaded.")
 
     @_module.sub_command(name="unload")
@@ -49,7 +49,7 @@ class ModuleLoader(commands.Cog):
         module: module to be unloaded
         """
         self.bot.unload_extension(f"cogs.{module}")
-        print(f"[INFO] Unloaded {module[:-3]}.")
+        print(f"[INFO] Unloaded {module}.")
         await inter.response.send_message(f"**{module}** has been unloaded.")
 
     @_module.sub_command(name="reload")
@@ -66,7 +66,7 @@ class ModuleLoader(commands.Cog):
         """
         self.bot.unload_extension(f"cogs.{module}")
         self.bot.load_extension(f"cogs.{module}")
-        print(f"[INFO] Reloaded {module[:-3]}.")
+        print(f"[INFO] Reloaded {module}.")
         await inter.response.send_message(f"**{module}** has been reloaded.")
 
     @_module.sub_command(name="restart")
