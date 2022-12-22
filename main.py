@@ -3,7 +3,7 @@ import dotenv
 import disnake
 
 from disnake.ext import commands
-from assets.tools.user_checkers import is_owner
+from assets.tools.user_checkers import is_bot_owner
 
 from circleutilitybot import CircleUtility
 
@@ -24,7 +24,7 @@ async def ping(ctx):
 
 
 @cu.slash_command(name="tools_reload")
-@commands.check(is_owner)
+@commands.check(is_bot_owner)
 async def _tools_reload(inter: disnake.GuildCommandInteraction):
     """reloads module loaders (load, unload, reload, restart)"""
     try:

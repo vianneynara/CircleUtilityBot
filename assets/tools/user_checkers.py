@@ -2,7 +2,7 @@ from assets.constants.owner_id import OWNER_ID
 from typing import Any
 
 
-def is_owner(context: Any) -> bool:
+def is_bot_owner(context: Any) -> bool:
     return context.author.id == OWNER_ID
 
 

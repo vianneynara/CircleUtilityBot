@@ -2,7 +2,7 @@ import os
 import disnake
 from disnake.ext import commands
 
-from assets.tools.user_checkers import is_owner
+from assets.tools.user_checkers import is_bot_owner
 from assets.constants.colors import *
 
 extensions_list = []
@@ -16,7 +16,7 @@ class ModuleLoader(commands.Cog):
         self.bot = bot
 
     @commands.slash_command(name="module", invoke_without_command=True)
-    @commands.check(is_owner)
+    @commands.check(is_bot_owner)
     async def _module(self, inter: disnake.GuildCommandInteraction):
         pass
 
