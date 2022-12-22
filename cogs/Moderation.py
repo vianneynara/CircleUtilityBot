@@ -11,7 +11,8 @@ from disnake.ext import commands
 from typing import Any
 from assets.methods.time_converters import get_timedelta_epoch
 from assets.exceptions import InvalidTargetException, InvalidDurationException, DurationTooLongException, RequiredParameterMissingException
-from assets.tools.user_checkers import is_owner
+from assets.tools.command_enabled_checker import is_command_enabled
+from assets.tools.user_checkers import is_bot_owner
 from assets.views import ModerationModal
 
 
@@ -70,6 +71,7 @@ class Moderation(commands.Cog):
         self.bot = bot
 
     @commands.slash_command(name="freeze")
+    @is_command_enabled()
     @commands.has_permissions(moderate_members=True)
     async def s_freeze(
             self,
@@ -107,8 +109,9 @@ class Moderation(commands.Cog):
 
         await inform_target(inter, target, reason, inter.application_command.name, epoch)
 
-    # @commands.message_command(name="Quick freeze")
-    # @commands.has_permissions(moderate_members=True)
+    @commands.message_command(name="Quick freeze")
+    @is_command_enabled()
+    @commands.has_permissions(moderate_members=True)
     async def m_freeze(
             self,
             inter: disnake.GuildCommandInteraction,
@@ -119,9 +122,7 @@ class Moderation(commands.Cog):
         Parameters
         ----------
         inter: Interaction.
-        target: The member to be frozen.
-        duration: The duration of this freeze. (e.g. 1d3h -> 1 day 3 hours, max is 28 days.) Default is 3 hours.
-        reason: Action reason.
+        message: The interaction message object.
         """
         try:
             await target_check(self.bot, inter, message.author, is_modal=True)
@@ -155,6 +156,7 @@ class Moderation(commands.Cog):
         )
 
     @commands.slash_command(name="unfreeze")
+    @is_command_enabled()
     @commands.has_permissions(moderate_members=True)
     async def s_unfreeze(
             self,
@@ -175,7 +177,8 @@ class Moderation(commands.Cog):
             await target.timeout(duration=0)
             await inter.edit_original_message(f"<@!{target.id}> has been released from timeout.")
 
-    @commands.slash_command(name="kick")
+    @commands.slash_command(name="kick"
+    @is_command_enabled()
     @commands.has_permissions(kick_members=True)
     async def s_kick(
             self,
@@ -205,6 +208,7 @@ class Moderation(commands.Cog):
         )
 
     @commands.slash_command(name="ban")
+    @is_command_enabled()
     @commands.has_permissions(ban_members=True)
     async def s_ban(
             self,
@@ -246,6 +250,7 @@ class Moderation(commands.Cog):
             await inter.followup.send(f"Chats sent {delete} day(s) before has also been removed.", ephemeral=True)
 
     @commands.slash_command(name="unban")
+    @is_command_enabled()
     @commands.has_permissions(ban_members=True)
     async def s_unban(
             self,
@@ -275,8 +280,51 @@ class Moderation(commands.Cog):
 
         await inter.edit_original_message("User is not banned from this guild.")
 
+    @commands.message_command(name="Warn this content")
+    @is_command_enabled()
+    @commands.has_permissions(moderate_members=True)
+    async def m_warn(
+            self,
+            inter: disnake.GuildCommandInteraction,
+            message: disnake.Message
+    ):
+        """Delete a message and send verbal warning to the author.
+
+        parameters
+        ==========
+        inter: Interaction.
+        message: The interaction message object.
+        """
+        await inter.response.send_message("Please enter the reason for the warn. (1 minute)", ephemeral=True)
+
+        try:
+            reason = await self.bot.wait_for(
+                "message",
+                check=lambda ans: ans.author.id == inter.author.id and ans.channel_id == inter.channel_id,
+                timeout=60
+            )
+
+            context = "`attachment(s) below`"
+            if message.content and message.attachments:
+                context = f"{message.content} and `attachment(s) below`"
+            elif message.content:
+                context = message.content
+
+            try:
+                await message.author.send(
+                    f"⚠ You got warned in **{inter.guild.name}**!"
+                    f"\n`for:` {reason}"
+                    f"\n`context:` {context}"
+                )
+            except disnake.Forbidden:
+                await inter.edit_original_message(f"You have warned <@!{message.author.id}> `for:` {reason}")
+
+        except asyncio.TimeoutError:
+            await inter.edit_original_message("Time limit exceeded, please restart this interaction.")
+
     @commands.slash_command(name="test")
-    @commands.check(is_owner)
+    @is_command_enabled()
+    @commands.check(is_bot_owner)
     async def testing_something(self, inter: disnake.GuildCommandInteraction):
         await inter.response.defer()
         await inter.edit_original_message("User not found!")
