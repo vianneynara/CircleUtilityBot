@@ -10,7 +10,7 @@ from disnake.ext import commands
 
 from typing import Any
 from assets.methods.time_converters import get_timedelta_epoch
-from assets.exceptions import InvalidTargetException, InvalidDurationException, DurationTooLongException
+from assets.exceptions import InvalidTargetException, InvalidDurationException, DurationTooLongException, RequiredParameterMissingException
 from assets.tools.user_checkers import is_owner
 from assets.views import ModerationModal
 
@@ -40,6 +40,29 @@ async def target_check(
         raise InvalidTargetException()
     else:
         if not is_modal: await inter.response.defer()
+
+
+ACTION_TYPES = {
+    "kick": "kicked",
+    "ban": "banned",
+    "freeze": "frozen"
+}
+
+
+async def inform_target(inter: disnake.GuildCommandInteraction, target: disnake.Member, reason: str, action: str, epoch: float = None):
+    if action == "freeze":
+        if epoch is None:
+            raise RequiredParameterMissingException('Parameter "epoch" unfilled!')
+        try:
+            await target.send(f"You have been {ACTION_TYPES.get(action)} in **{inter.guild.name}** `for` __{reason}__. "
+                              f"\nYou will be able to communicate again at <t:{int(epoch)}:F>")
+        except disnake.Forbidden:
+            await inter.followup.send("User has their DM closed, hence the action was not informed.", ephemeral=True)
+    else:
+        try:
+            await target.send(f"You have been {ACTION_TYPES.get(action)} from **{inter.guild.name}** `for` __{reason}__")
+        except disnake.Forbidden:
+            await inter.followup.send("User has their DM closed, hence the action was not informed.", ephemeral=True)
 
 
 class Moderation(commands.Cog):
@@ -82,13 +105,24 @@ class Moderation(commands.Cog):
             f"\n`for:` {reason}"
         )
 
-    @commands.message_command(name="Quick freeze")
-    @commands.has_permissions(moderate_members=True)
+        await inform_target(inter, target, reason, inter.application_command.name, epoch)
+
+    # @commands.message_command(name="Quick freeze")
+    # @commands.has_permissions(moderate_members=True)
     async def m_freeze(
             self,
             inter: disnake.GuildCommandInteraction,
             message: disnake.Message,
     ):
+        """Prevents a member from interacting in the server.
+
+        Parameters
+        ----------
+        inter: Interaction.
+        target: The member to be frozen.
+        duration: The duration of this freeze. (e.g. 1d3h -> 1 day 3 hours, max is 28 days.) Default is 3 hours.
+        reason: Action reason.
+        """
         try:
             await target_check(self.bot, inter, message.author, is_modal=True)
         except InvalidTargetException:
@@ -162,16 +196,13 @@ class Moderation(commands.Cog):
         except InvalidTargetException:
             return
 
-        try:
-            await inter.edit_original_message(
-                f"<@!{target.id}> **has been kicked**."
-                f"\n`for:` __{reason}__"
-            )
-            await target.send(f"You've been kicked from **{inter.guild.name}** `for` __{reason}__")
+        await inform_target(inter, target, reason, inter.application_command.name)
 
-            await target.kick(reason=reason)
-        except disnake.Forbidden:
-            await inter.followup.send("User has their DM closed, hence the action was not informed.", ephemeral=True)
+        await target.kick(reason=reason)
+        await inter.edit_original_message(
+            f"<@!{target.id}> **has been kicked**."
+            f"\n`for:` __{reason}__"
+        )
 
     @commands.slash_command(name="ban")
     @commands.has_permissions(ban_members=True)
@@ -187,7 +218,7 @@ class Moderation(commands.Cog):
                     "Chats 3 days before": "3",
                     "Chats 7 days before": "7",
                 }
-            ) = 0
+            ) = "0"
     ):
         """Bans a member from the server.
 
@@ -203,19 +234,16 @@ class Moderation(commands.Cog):
         except InvalidTargetException:
             return
 
-        try:
-            await inter.edit_original_message(
-                f"<@!{target.id}> **has been banned**."
-                f"\n`for:` __{reason}__"
-            )
-            await target.send(f"You've been banned from **{inter.guild.name}** `for` __{reason}__")
+        await inform_target(inter, target, reason, inter.application_command.name)
 
-            if delete != 0:
-                await target.ban(reason=reason, delete_message_days=int(delete))
-            else:
-                await target.ban(reason=reason)
-        except disnake.Forbidden:
-            await inter.followup.send("User has their DM closed, hence the action was not informed.", ephemeral=True)
+        int(delete)
+        await target.ban(reason=reason, delete_message_days=delete)
+        await inter.edit_original_message(
+            f"<@!{target.id}> **has been banned**."
+            f"\n`for:` __{reason}__"
+        )
+        if delete != 0:
+            await inter.followup.send(f"Chats sent {delete} day(s) before has also been removed.", ephemeral=True)
 
     @commands.slash_command(name="unban")
     @commands.has_permissions(ban_members=True)
