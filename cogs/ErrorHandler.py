@@ -19,6 +19,7 @@ def get_cooldown(error: commands.errors.CommandOnCooldown):
         f"{f'**{round(seconds)}** seconds' if round(seconds) > 0 else ''}."
     )
 
+
 class ErrorHandler(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -31,7 +32,8 @@ class ErrorHandler(commands.Cog):
     ) -> None:
         error = getattr(error, "original", error)  # gets the actual disnake error
 
-        if isinstance(error, commands.errors.CheckFailure): return
+        if isinstance(error, commands.errors.CheckFailure):
+            return
 
         if isinstance(error, commands.MissingPermissions):
             message = f"You are missing `{', '.join(error.missing_permissions)}` permission to run this command."
@@ -100,7 +102,8 @@ class ErrorHandler(commands.Cog):
     ) -> None:
         error = getattr(error, "original", error)  # gets the actual disnake error
 
-        if isinstance(error, commands.errors.CheckFailure): return
+        if isinstance(error, commands.errors.CheckFailure):
+            return
 
         if isinstance(error, commands.MissingPermissions):
             message = f"You are missing `{', '.join(error.missing_permissions)}` permission to run this command."
