@@ -177,7 +177,7 @@ class Moderation(commands.Cog):
             await target.timeout(duration=0)
             await inter.edit_original_message(f"<@!{target.id}> has been released from timeout.")
 
-    @commands.slash_command(name="kick"
+    @commands.slash_command(name="kick")
     @is_command_enabled()
     @commands.has_permissions(kick_members=True)
     async def s_kick(
