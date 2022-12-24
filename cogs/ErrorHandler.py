@@ -6,6 +6,19 @@ from disnake.ext import commands
 datetime_now = disnake.utils.utcnow()
 
 
+def get_cooldown(error: commands.errors.CommandOnCooldown):
+    seconds, minutes, hours = (
+        round(divmod(error.retry_after, 60)),
+        round(divmod(error.retry_after, 3600)),
+        round(round(divmod(error.retry_after, 3600)) % 24)
+    )
+    return (
+        f"Command under cooldown, please try again in "
+        f"{f'**{round(hours)}** hours ' if round(hours) > 0 else ''}"
+        f"{f'**{round(minutes)}** minutes ' if round(minutes) > 0 else ''}"
+        f"{f'**{round(seconds)}** seconds' if round(seconds) > 0 else ''}."
+    )
+
 class ErrorHandler(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -41,18 +54,7 @@ class ErrorHandler(commands.Cog):
             await inter.response.send_message(message, ephemeral=True)
 
         elif isinstance(error, commands.errors.CommandOnCooldown):
-            seconds, minutes, hours = (
-                round(divmod(error.retry_after, 60)),
-                round(divmod(error.retry_after, 3600)),
-                round(round(divmod(error.retry_after, 3600)) % 24)
-            )
-            message = (
-                f"Command under cooldown, please try again in "
-                f"{f'**{round(hours)}** hours ' if round(hours) > 0 else ''}"
-                f"{f'**{round(minutes)}** minutes ' if round(minutes) > 0 else ''}"
-                f"{f'**{round(seconds)}** seconds' if round(seconds) > 0 else ''}."
-            )
-            await inter.response.send_message(message, ephemeral=True)
+            await inter.response.send_message(get_cooldown(error), ephemeral=True)
 
         elif isinstance(error, commands.ExtensionNotFound):
             message = f"Extension {error.name.partition('.')[2]} not found."
@@ -121,18 +123,7 @@ class ErrorHandler(commands.Cog):
             await inter.response.send_message(message, ephemeral=True)
 
         elif isinstance(error, commands.errors.CommandOnCooldown):
-            seconds, minutes, hours = (
-                round(divmod(error.retry_after, 60)),
-                round(divmod(error.retry_after, 3600)),
-                round(round(divmod(error.retry_after, 3600)) % 24)
-            )
-            message = (
-                f"Command under cooldown, please try again in "
-                f"{f'**{round(hours)}** hours ' if round(hours) > 0 else ''}"
-                f"{f'**{round(minutes)}** minutes ' if round(minutes) > 0 else ''}"
-                f"{f'**{round(seconds)}** seconds' if round(seconds) > 0 else ''}."
-            )
-            await inter.response.send_message(message, ephemeral=True)
+            await inter.response.send_message(get_cooldown(error), ephemeral=True)
 
         else:
             # this will be executed if the error is not handled above
