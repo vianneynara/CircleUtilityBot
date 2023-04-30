@@ -28,7 +28,5 @@ This bot is hosted on a local machine.
 - disnake 2.7.0
 - python-dotenv 0.21.0
 
-### Contact Me
-Discord:
-- Discord ID  : 389034898666553344
-- Username    : Circle#6283
+### STATUS
+Discontinued until further updates. Currently doing other things.
